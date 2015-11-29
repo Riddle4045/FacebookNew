@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Vendor: com.assembla.scala-incubator
+Implementation-Title: Graph Core
+Implementation-Version: 1.9.0
+Implementation-Vendor-Id: com.assembla.scala-incubator
+Specification-Vendor: com.assembla.scala-incubator
+Specification-Title: Graph Core
+Specification-Version: 1.9.0
+
