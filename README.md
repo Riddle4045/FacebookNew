@@ -69,6 +69,8 @@ Performance :
 
 As mentioned below, we set up a load Monitor service which kept track of all the load on the Akka Facebook server  below is a performance chart for  a session. 
 
+![Request Rate](resources/Untitled.png?raw=true "Title")
+
 As we can clearly see, We are averaging around 18,000 request per second which is a very good performance measure for such a system. This session was run on Lin machines of the University Lab with the following specifications:
 
 8 core Machine with the following specification:
