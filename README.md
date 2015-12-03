@@ -1,21 +1,29 @@
 
-FACEBOOK PROJECT
-Ishan Patwa UFID: 65461485
-Juthika Das UFID: 71735283
+#Facebook Simulation using Akka and Spray.Io
+
+*Ishan Patwa UFID: 65461485*
+*Juthika Das UFID: 71735283*
 
 
-INSTRUCTIONS FOR RUNNING THE PROJECT:
+##How to run the project:
+
+
 
 This project has the following Folder structure 
---Facebook3
---Executables
---Readme.pdf
+-Facebook3
+-Executables
+-README.md
+
 
 Facebook3 is a sbt project contains all the sbt config files
+
 Executables contains Jar files.
+
+
 Readme is the file explaining the architecture and performance ( this file )
 
-This Project can be run in two ways.
+
+There are two ways to run the project:.
 
 First Way :Go to the Executables section and run the Facebook-Server.jar followed by Facebook-Client.jar.
 Facebook-Server.jar doesn't take any arguments. to run Facebook-Client.jar you have to give one argument that will be an integer specifying the load  from the Client to server.
