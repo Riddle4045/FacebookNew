@@ -1,6 +1,8 @@
 
 #Facebook Simulation using Akka and Spray.Io
 
+Main Contributors : [Ishan Patwa](http://riddle4045.github.io/blog/), [Juthika Das](http://djuthika.github.io/)
+
 ##How to run the project:
 
 This project has the following Folder structure 
@@ -43,26 +45,33 @@ select facebookClient.Client ( option 3)
  
 ```
 
-NOTE : The output on the server is number of requests processed each second. 
+>NOTE : The output on the server is number of requests processed each second. 
 We have refrained from printing timeline/profiles/posts etc as they just hamper the performance.
-ARCHITECTURE
 
-The system is divided into the client side, interface and the server side. The client side consists of the ClientService.scala which is the class that initiates get and post request actors that are instantiated through the GETRequestClient and the POSTRequestClient classes. The gETRequestClient class sends HTTP requests such as getWall to retrive the wall, getProfile to get the profile of a mentioned userId etc. We are using the Spray http library to implement this functionality. 
 
-To connect the client and the server side, we have an interface that we define in a class called Master.scala. This class receives the get and post requests from the client and the server. 
+##ARCHITECTURE
+
+The project simulates Facebook API's such as `Posts Messages`,` Walls`,`Photos`, `Timelines` and `Albums`. We have also simulated a Client API that mimics the load of actuall facebook users on the server, the client side is written using [Spray-can](http://spray.io/).
+
+To optimize performance on each side, all the API's simulated have their corresponding serviceRouters ( Akka Routers ) which distribute the incoming HTTP request among routees. These service routers are Akka based actors each handling one part of the API. 
+
+The Client side sends request to a Master.scala Interface actor which intercepts those requests using routes as defined in spray-routing and forwards the requests to the required ServiceRouter.
+
+
+##Class Strucute.
 
 The main class is server.scala. It performs 2 major tasks:
-Start all the services, which involves initializing all the service hashmaps and the routers. We have 5 service routers called PostServiceRouter, WallServiceRouter, PhotoServiceRouter, FriendListRouter and ProfileServiceRouter. On the same lines, we have 5 hashmaps. 
-We’re considering the wall to be a universal hashmap. The wall basically consists of all posts from all users in the system. The WallHashMap is therefore a nested hashmap. 
-The profile hashmap is used to store a user profile, associated with the userId of a user. The profile has fields and values. The fields, in our case, are random strings but they can be fields such as name, school, age, date of birth and other personal information.
- The FriendsListMap is a Simple hashmap of a userId as they key and a list of friends as its value. This gets updates when a friend request is sent. 
-Then we have the photoURLMap. The photoURLMap is used during the service of sending photos to a friend’s wall. So this hashmap consists to the receiverId, the photo URL and an album name that the photo is meant to belong to.
+*Start all the services, which involves initializing all the service hashmaps and the routers. We have 5 service routers called PostServiceRouter, WallServiceRouter, PhotoServiceRouter, FriendListRouter and ProfileServiceRouter. On the same lines, we have 5 hashmaps. 
+*We’re considering the wall to be a universal hashmap. The wall basically consists of all posts from all users in the system. The WallHashMap is therefore a nested hashmap. 
+*The profile hashmap is used to store a user profile, associated with the userId of a user. The profile has fields and values. The fields, in our case, are random strings but they can be fields such as name, school, age, date of birth and other personal information.
+*The FriendsListMap is a Simple hashmap of a userId as they key and a list of friends as its value. This gets updates when a friend request is sent. 
+*Then we have the photoURLMap. The photoURLMap is used during the service of sending photos to a friend’s wall. So this hashmap consists to the receiverId, the photo URL and an album name that the photo is meant to belong to.
 To initialize the interface that is defined in Master.scala
 
 On the server side, we have two set of classes i.e the serviceRouters and the services. The serviceRouters create a router and route the message to the main service class. To make things unabmiguous, we have a one-to-one mapping between the service routers and the services. So the serviceRouters comprise of the WallServiceRouter, ProfileServiceRouter, FriendListRouter, PhotoServiceRouter and PostSeriveRouter. These route messages to the WallService, ProfileService, FriendListService, PhotoService and the PostService respectively. 
 
 
-SERVICES
+##SERVICES
 
 The services are where we’re updating all the hashmaps, either globally in case of the WallHashMap or depending on the userId in case of all other HashMaps. Depending on the value fields in the hashMaps, which are new hashmaps in case of the WallHashMap, PostHashMap, ProfileHashMap and PhotoURLHashMap or a list of userIds in case of FriendListHashMap, we append the hashmaps by adding the request values. On completion of these updates, the interface, i.e Master.scala gets a completion message. 
 
