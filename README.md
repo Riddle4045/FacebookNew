@@ -71,14 +71,14 @@ To initialize the interface that is defined in Master.scala
 On the server side, we have two set of classes i.e the serviceRouters and the services. The serviceRouters create a router and route the message to the main service class. To make things unabmiguous, we have a one-to-one mapping between the service routers and the services. So the serviceRouters comprise of the WallServiceRouter, ProfileServiceRouter, FriendListRouter, PhotoServiceRouter and PostSeriveRouter. These route messages to the WallService, ProfileService, FriendListService, PhotoService and the PostService respectively. 
 
 
-##SERVICES
+##Services
 
 The services are where we’re updating all the hashmaps, either globally in case of the WallHashMap or depending on the userId in case of all other HashMaps. Depending on the value fields in the hashMaps, which are new hashmaps in case of the WallHashMap, PostHashMap, ProfileHashMap and PhotoURLHashMap or a list of userIds in case of FriendListHashMap, we append the hashmaps by adding the request values. On completion of these updates, the interface, i.e Master.scala gets a completion message. 
 
-To check the load for the system, we have defined a service called the LoadMonitorService. The LoadMonitorService keeps track of all kinds of threads that are being used when a request is made, so we have postThreads, wallThreads, addFriendThreads, photoThreads and getThreads. At the same time we’re also keeping track of the total number of threads in use. This is maintained using a variable called allThreads which gets updated whenever a request is being processed. The load monitor tells us the number of threads being used per second. 
+To check the load for the system, we have defined a service called the `LoadMonitorService`. The LoadMonitorService keeps track of all kinds of threads that are being used when a request is made, so we have postThreads, wallThreads, addFriendThreads, photoThreads and getThreads. At the same time we’re also keeping track of the total number of threads in use. This is maintained using a variable called allThreads which gets updated whenever a request is being processed. The load monitor tells us the number of threads being used per second. 
 
 
-Performance :
+##Performance 
 
 As mentioned below, we set up a load Monitor service which kept track of all the load on the Akka Facebook server  below is a performance chart for  a session. 
 
