@@ -1,13 +1,7 @@
 
 #Facebook Simulation using Akka and Spray.Io
 
-*Ishan Patwa UFID: 65461485*
-*Juthika Das UFID: 71735283*
-
-
 ##How to run the project:
-
-
 
 This project has the following Folder structure 
 -Facebook3
@@ -15,37 +9,39 @@ This project has the following Folder structure
 -README.md
 
 
-Facebook3 is a sbt project contains all the sbt config files
-
-Executables contains Jar files.
-
-
-Readme is the file explaining the architecture and performance ( this file )
+Facebook3 is a sbt project contains all the sbt config files Executables contains Jar files for those not familiar with working's of SBT.
 
 
 There are two ways to run the project:.
 
 First Way :Go to the Executables section and run the Facebook-Server.jar followed by Facebook-Client.jar.
-Facebook-Server.jar doesn't take any arguments. to run Facebook-Client.jar you have to give one argument that will be an integer specifying the load  from the Client to server.
+Facebook-Server.jar doesn't take any arguments.
+Facebook-Client.jar takes  one argument that will be an integer specifying the load  from the Client to server.
 Example usage :
+```
 run : java -jar Facebook-Server.jar 
 java -jar Facebook-Client.jar 100 ( 100 is the value we have used in our experiments)
+```
 
-
-Second way :  IF SBT is installed , if sbt is available on the machine. you can go to the project folder i.e Facebook3 and run using the “run” command.
+Second way : ** IF SBT is installed**
+ if sbt is available on the machine. you can go to the project folder i.e Facebook3 and run using the “run” command.
 
 NOTE: Since we have two entry points for client and Server.
 to run server first enter the following.
+```
 sbt 
 run 
 select Server ( option 2)
+```
 
 to run client enter the following command.
+
+```
 sbt 
 run 
 select facebookClient.Client ( option 3)
  
-
+```
 
 NOTE : The output on the server is number of requests processed each second. 
 We have refrained from printing timeline/profiles/posts etc as they just hamper the performance.
