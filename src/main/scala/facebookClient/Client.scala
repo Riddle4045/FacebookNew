@@ -9,14 +9,13 @@ import common.StartClientRequests
 
 object Client {
 
-  def main(args : Array[String]){
+  def main(args : Array[String]) {
         
-        val numberOfUsers : Int = 1000    //change it to system paramters
+        val numberOfUsers : Int = args(0).toInt   //change it to system paramters
        // val requestPerSecond : Int = 1000
         //parameters to control scaling factors
-        val getRequestRate : Int = 1000;
-        val postRequestRate : Int = 1000;
-
+        val getRequestRate : Int = 100;
+        val postRequestRate : Int = 10;
         val  constants = new Constants()
         val localAddress: String = java.net.InetAddress.getLocalHost.getHostAddress()
         val configString = """akka {

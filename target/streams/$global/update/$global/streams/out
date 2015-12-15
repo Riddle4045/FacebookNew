@@ -7,7 +7,7 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies for default#facebook3_2.11;1.0 [compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.scala-lang#scala-library;2.11.2 [compile->default(compile)][0m
 [0m[[0minfo[0m] [0mResolving org.scala-lang#scala-library;2.11.2 ...[0m
-[0m[[0mdebug[0m] [0msbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@77aaea1f[0m
+[0m[[0mdebug[0m] [0msbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@5d7fb95[0m
 [0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: org.scala-lang#scala-library;2.11.2[0m
 [0m[[0mdebug[0m] [0m	found org.scala-lang#scala-library;2.11.2 in sbt-chain[0m
 [0m[[0mdebug[0m] [0m	[2.11.2] org.scala-lang#scala-library;2.11.2[0m
@@ -597,6 +597,34 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-client_2.11;1.3.1 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->default(compile)][0m
+[0m[[0minfo[0m] [0mResolving io.spray#spray-json_2.11;1.3.1 ...[0m
+[0m[[0mdebug[0m] [0msbt-chain: Checking cache for: dependency: io.spray#spray-json_2.11;1.3.1 {compile=[default(compile)]}[0m
+[0m[[0minfo[0m] [0mResolving io.spray#spray-json_2.11;1.3.1 ...[0m
+[0m[[0mdebug[0m] [0msbt-chain-delegate: Checking cache for: dependency: io.spray#spray-json_2.11;1.3.1 {compile=[default(compile)]}[0m
+[0m[[0mdebug[0m] [0m		tried /Users/Ishan/.ivy2/local/io.spray/spray-json_2.11/1.3.1/ivys/ivy.xml[0m
+[0m[[0mdebug[0m] [0m	local: no ivy file found for io.spray#spray-json_2.11;1.3.1[0m
+[0m[[0mdebug[0m] [0m		tried https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.pom[0m
+[0m[[0mdebug[0m] [0m	jcenter: found md file for io.spray#spray-json_2.11;1.3.1[0m
+[0m[[0mdebug[0m] [0m		=> https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.pom (1.3.1)[0m
+[0m[[0mdebug[0m] [0mdownloading https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.pom ...[0m
+[0m[[0mdebug[0m] [0m	jcenter: downloading https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.pom[0m
+[0m[[0mdebug[0m] [0m	jcenter: downloading https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.pom.sha1[0m
+[0m[[0mdebug[0m] [0msha1 OK for https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.pom[0m
+[0m[[0mdebug[0m] [0m	[SUCCESSFUL ] io.spray#spray-json_2.11;1.3.1!spray-json_2.11.pom(pom.original) (253ms)[0m
+[0m[[0mdebug[0m] [0m		tried /Users/Ishan/.ivy2/local/io.spray/spray-json_2.11/1.3.1/bundles/spray-json_2.11.jar[0m
+[0m[[0mdebug[0m] [0m		tried https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.jar[0m
+[0m[[0mdebug[0m] [0m	found io.spray#spray-json_2.11;1.3.1 in jcenter[0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->master][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->default(compile)][0m
 [0m[[0minfo[0m] [0mResolving org.json4s#json4s-native_2.11;3.2.10 ...[0m
 [0m[[0mdebug[0m] [0msbt-chain: Checking cache for: dependency: org.json4s#json4s-native_2.11;3.2.10 {compile=[default(compile)]}[0m
@@ -1163,6 +1191,17 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-client_2.11;1.3.1 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->master][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->runtime][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->compile][0m
@@ -1674,6 +1713,17 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-client_2.11;1.3.1 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->master][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->runtime][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->compile][0m
@@ -2275,6 +2325,17 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-client_2.11;1.3.1 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->master][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->runtime][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->compile][0m
@@ -2788,6 +2849,17 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-client_2.11;1.3.1 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->master][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->runtime][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->compile][0m
@@ -3301,6 +3373,17 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-client_2.11;1.3.1->io.spray#spray-util_2.11;1.3.1 [runtime->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-client_2.11;1.3.1 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->compile(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [compile->master(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.2 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->runtime(*)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies io.spray#spray-json_2.11;1.3.1->org.scala-lang#scala-library;2.11.4 [runtime->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->io.spray#spray-json_2.11;1.3.1 [compile->master][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->runtime][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#facebook3_2.11;1.0->org.json4s#json4s-native_2.11;3.2.10 [compile->compile][0m
@@ -3571,6 +3654,12 @@
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] com.typesafe.akka#akka-remote_2.11;2.3.7!akka-remote_2.11.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] io.spray#spray-routing_2.11;1.3.1!spray-routing_2.11.jar(bundle)[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] io.spray#spray-client_2.11;1.3.1!spray-client_2.11.jar(bundle)[0m
+[0m[[0mdebug[0m] [0m		tried https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.jar[0m
+[0m[[0minfo[0m] [0mdownloading https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.jar ...[0m
+[0m[[0mdebug[0m] [0m	jcenter: downloading https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.jar[0m
+[0m[[0mdebug[0m] [0m	jcenter: downloading https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.jar.sha1[0m
+[0m[[0mdebug[0m] [0msha1 OK for https://jcenter.bintray.com/io/spray/spray-json_2.11/1.3.1/spray-json_2.11-1.3.1.jar[0m
+[0m[[0minfo[0m] [0m	[SUCCESSFUL ] io.spray#spray-json_2.11;1.3.1!spray-json_2.11.jar(bundle) (1683ms)[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.json4s#json4s-native_2.11;3.2.10!json4s-native_2.11.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] com.typesafe.scala-logging#scala-logging-slf4j_2.11;2.1.2!scala-logging-slf4j_2.11.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] ch.qos.logback#logback-classic;1.1.2!logback-classic.jar[0m
@@ -3626,7 +3715,7 @@
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang#scala-compiler;2.11.2!scala-compiler.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang.modules#scala-parser-combinators_2.11;1.0.2!scala-parser-combinators_2.11.jar(bundle)[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] jline#jline;2.12!jline.jar[0m
-[0m[[0mdebug[0m] [0m:: resolution report :: resolve 1874ms :: artifacts dl 46ms[0m
+[0m[[0mdebug[0m] [0m:: resolution report :: resolve 2986ms :: artifacts dl 1725ms[0m
 [0m[[0mdebug[0m] [0m	report for default#facebook3_2.11;1.0 compile produced in /Users/Ishan/Documents/workspace/Facebook3/target/resolution-cache/reports/default-facebook3_2.11-compile.xml[0m
 [0m[[0mdebug[0m] [0m	report for default#facebook3_2.11;1.0 runtime produced in /Users/Ishan/Documents/workspace/Facebook3/target/resolution-cache/reports/default-facebook3_2.11-runtime.xml[0m
 [0m[[0mdebug[0m] [0m	report for default#facebook3_2.11;1.0 test produced in /Users/Ishan/Documents/workspace/Facebook3/target/resolution-cache/reports/default-facebook3_2.11-test.xml[0m
@@ -3640,7 +3729,7 @@
 [0m[[0mdebug[0m] [0m	report for default#facebook3_2.11;1.0 docs produced in /Users/Ishan/Documents/workspace/Facebook3/target/resolution-cache/reports/default-facebook3_2.11-docs.xml[0m
 [0m[[0mdebug[0m] [0m	report for default#facebook3_2.11;1.0 pom produced in /Users/Ishan/Documents/workspace/Facebook3/target/resolution-cache/reports/default-facebook3_2.11-pom.xml[0m
 [0m[[0mdebug[0m] [0m	report for default#facebook3_2.11;1.0 scala-tool produced in /Users/Ishan/Documents/workspace/Facebook3/target/resolution-cache/reports/default-facebook3_2.11-scala-tool.xml[0m
-[0m[[0mdebug[0m] [0m	resolve done (1874ms resolve - 46ms download)[0m
+[0m[[0mdebug[0m] [0m	resolve done (2986ms resolve - 1725ms download)[0m
 [0m[[0minfo[0m] [0mDone updating.[0m
 [0m[[33mwarn[0m] [0mScala version was updated by one of library dependencies:[0m
 [0m[[33mwarn[0m] [0m	* org.scala-lang:scala-library:(2.11.2, 2.11.0-M3, 2.11.0, 2.11.1) -> 2.11.4[0m

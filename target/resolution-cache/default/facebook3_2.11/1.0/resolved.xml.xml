@@ -4,7 +4,7 @@
 		module="facebook3_2.11"
 		revision="1.0"
 		status="integration"
-		publication="20151124225103"
+		publication="20151213132921"
 	>
 		<description>
 		Facebook3
@@ -40,6 +40,7 @@
 		<dependency org="io.spray" name="spray-routing_2.11" rev="1.3.1" conf="compile->default(compile)"/>
 		<dependency org="io.spray" name="spray-client_2.11" rev="1.3.1" conf="compile->default(compile)"/>
 		<dependency org="io.spray" name="spray-testkit_2.11" rev="1.3.1" conf="test->default(compile)"/>
+		<dependency org="io.spray" name="spray-json_2.11" rev="1.3.1" conf="compile->default(compile)"/>
 		<dependency org="org.json4s" name="json4s-native_2.11" rev="3.2.10" conf="compile->default(compile)"/>
 		<dependency org="com.typesafe.scala-logging" name="scala-logging-slf4j_2.11" rev="2.1.2" conf="compile->default(compile)"/>
 		<dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="compile->default(compile)"/>

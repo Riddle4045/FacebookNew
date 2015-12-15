@@ -29,7 +29,7 @@ class PostService(numberOfActors :  Int ,
     catch{
       case e : Exception => println("There's an exception")
     }
-  //  println("printing post" + PostHashMap.toString())
+  // println("printing post" + PostHashMap.toString())
     updateFacebookWall(receiverId,senderId,post)
     loadMonitor ! FinishedWork("addPost")
   }

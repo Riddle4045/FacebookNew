@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   "io.spray" %% "spray-routing" % sprayVersion,
   "io.spray" %% "spray-client" % sprayVersion,
   "io.spray" %% "spray-testkit" % sprayVersion % "test",
+  "io.spray" %% "spray-json"   % sprayVersion,
   "org.json4s" %% "json4s-native" % "3.2.10",
   "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
   "ch.qos.logback" % "logback-classic" % "1.1.2",
@@ -21,4 +22,4 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.9.5" % "test"
 )
 
-mainClass in assembly := Some("facebookClient.Client")
+mainClass in assembly := Some("Server")

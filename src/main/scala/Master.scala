@@ -16,6 +16,17 @@ import common.updateProfile
 import common.FinishedWork
 import common.addFriends
 import common.addPhotos
+import org.w3c.dom.Entity
+import spray.httpx.SprayJsonSupport
+import spray.json.DefaultJsonProtocol
+import org.json4s.JsonAST.JObject
+import org.json4s.JsonFormat
+import spray.json._
+import spray.json.JsonParser
+import scala.util.parsing.json.JSON
+import org.json4s.JsonUtil
+import scala.util.parsing.json.JSONType
+import org.json4s.JsonWriter
 
 object Master extends App with SimpleRoutingApp {
   
@@ -26,28 +37,31 @@ object Master extends App with SimpleRoutingApp {
     startServer(interface = "localhost" , port=8080){
         post {
             path("updateProfile") {
-              parameters("userId","profileField" , "profileValue") { (userId ,profileField,profileValue) =>
-                var path = akkaServerPath + "profileServiceRouter"
+              entity(as[String])  { profile =>
+                var data  = profile.stripMargin.replaceAll("[\n\r]","")
+               var jsonData = data.parseJson.asJsObject
+              var path = akkaServerPath + "profileServiceRouter"
                 complete {
-                          var postServiceRouter  = system.actorSelection(path) ! updateProfile(userId,profileField,profileValue)
+                          var postServiceRouter  = system.actorSelection(path) ! updateProfile(jsonData.getFields("userId").toString(),jsonData.getFields("profileField").toString(),jsonData.getFields("profileValue").toString())
                               "wall updated"
                 }
               }      
             }
-        } ~
+        } ~  
           post {
-            path("sendPost") {
-              parameters("senderId", "receiverId", "post") { (senderId,receiverId,post) =>
+            path("sendPostwithData") {
+              entity(as[String])  { post =>
+                var data  = post.stripMargin.replaceAll("[\n\r]","")
+               var jsonData = data.parseJson.asJsObject
+            
                 var path = akkaServerPath + "postServiceRouter"
                 complete {
-                          var postServiceRouter  = system.actorSelection(path) ! addPost(receiverId,senderId,post)
-                              "profile updated"
+                     var postServiceRouter  = system.actorSelection(path) ! addPost(jsonData.getFields("receiverId").toString(),jsonData.getFields("senderId").toString(),jsonData.getFields("post").toString())
+                     "profile updated"
                 }
               }
-
-
             }
-        } ~  
+        } ~ 
         post {
             path("addFriend") {
               parameters("fromId", "toId") { (fromId,toId) =>
@@ -58,13 +72,16 @@ object Master extends App with SimpleRoutingApp {
                 }
               }
             }
+            /**/
         } ~
          post {
             path("postPhoto") {
-              parameters("fromId", "toId", "url") { (fromId,toId,url) =>
+            entity(as[String])  { photo =>
+                var data  = photo.stripMargin.replaceAll("[\n\r]","")
+               var jsonData = data.parseJson.asJsObject
                 var path = akkaServerPath + "photoServiceRouter"
                 complete {
-                          var postServiceRouter  = system.actorSelection(path) ! addPhotos(fromId,toId,url)
+                          var postServiceRouter  = system.actorSelection(path) ! addPhotos(jsonData.getFields("fromId").toString(),jsonData.getFields("toId").toString(),jsonData.getFields("url").toString(),jsonData.getFields("albumName").toString())
                               "photo updated"
                 }
               }

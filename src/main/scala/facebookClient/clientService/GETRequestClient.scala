@@ -19,16 +19,35 @@ import common.GetWall
 import common.StartClientRequests
 import common.SendRequestToServer
 import facebookClient.Client
+import java.security.KeyPairGenerator
+import java.util._
+import sun.misc.BASE64Encoder
 
 
 //This actor class will be sending only Get request 
-class GETRequestClient(getRequestRate : Int, numOfUsers : Int) extends Actor {
+
+class GETRequestClient(getRequestRate : Int, numOfUsers : Int,publicKeyHashMap : collection.concurrent.Map[String,String] ) extends Actor {
   
   implicit val system: ActorSystem = ActorSystem()
   implicit val timeout: Timeout = Timeout(15.seconds)
   import system.dispatcher
+  generateKeyPair()
   
+  def generateKeyPair(strength : Int = 1024)   = {
+          var keyPairGen  = KeyPairGenerator.getInstance("RSA")
+          var pair =  keyPairGen.generateKeyPair();
+          var publicKey = pair.getPublic.getEncoded
+          var privateKey = pair.getPrivate.getEncoded
+          var b64 = new BASE64Encoder()
+          var publicString = b64.encode(publicKey)
+          
+          
+          //println(b64.encode(publicKey));
+
+
+  }
   def getProfile(userId: String) = {
+    
     for {
        response <- (IO(Http) ? HttpRequest(GET, Uri("http://127.0.0.1:8080/profile"))).mapTo[HttpResponse]
     }  yield {

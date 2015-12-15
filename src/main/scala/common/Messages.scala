@@ -17,4 +17,5 @@ package common
   case class PostToProfile(userId : String) extends Messages
   case object PrintThreadCount extends Messages
   case class addFriends(fromId : String, toId: String) extends Messages
-  case class addPhotos(fromId :  String, toId:String, url:String) extends Messages
+  case class addPhotos(fromId :  String, toId:String, url:String,albumName:String) extends Messages
+  case object RegisterUser extends Messages

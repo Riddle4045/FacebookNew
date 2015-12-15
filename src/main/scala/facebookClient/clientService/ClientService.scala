@@ -3,6 +3,7 @@ package facebookClient.clientService
 import akka.actor.Actor
 import common.StartClientRequests
 import akka.io.IO
+import scala.collection.convert.decorateAsScala.mapAsScalaConcurrentMapConverter
 import spray.can.Http
 import scala.concurrent.Future
 import akka.util.Timeout
@@ -15,11 +16,15 @@ import common.SendRequestToServer
 import akka.actor.Props
 import scala.concurrent.duration
 import akka.actor.ActorRef
+import java.util.concurrent.ConcurrentHashMap
+import common.RegisterUser
+import java.security.PublicKey
 
 class ClientService(numOfUsers : Int,getRequestRate : Int,postRequestRate : Int, actorsystem : ActorSystem) extends Actor {
   
   implicit val system: ActorSystem = actorsystem
   implicit val timeout: Timeout = Timeout(15.seconds)
+  var publicKeyHashMap : collection.concurrent.Map[String,PublicKey] = new ConcurrentHashMap().asScala
   import system.dispatcher
   
 //  def startSendingRequests = {
@@ -31,16 +36,11 @@ class ClientService(numOfUsers : Int,getRequestRate : Int,postRequestRate : Int,
 //        count = count + 1;   
 //    }  
 //  }
-
-  var getRequestActor = new Array[ActorRef](100);
-  var postRequestActor = new Array[ActorRef](100);
   
   def scheduleRequest = {
-    for ( i <- 1 to 100){
-         getRequestActor(i) = system.actorOf(Props( new GETRequestClient(getRequestRate,numOfUsers)), name="getRequestActor" + i) 
-           getRequestActor(i) ! StartClientRequests
-     postRequestActor(i) = system.actorOf(Props(new POSTRequestClient(postRequestRate,numOfUsers)), name="postRequestActor" + i) 
-     postRequestActor(i) ! StartClientRequests 
+    for ( i <- 0 to numOfUsers-1){
+          var facebookUser = system.actorOf(Props(new FacebookUsers(numOfUsers,postRequestRate,publicKeyHashMap)), name="user" + i)
+          facebookUser ! RegisterUser
     }
 
   }
@@ -48,6 +48,6 @@ class ClientService(numOfUsers : Int,getRequestRate : Int,postRequestRate : Int,
   
   def receive = {  
     case StartClientRequests => println("Scheduling Requests")
-      scheduleRequest
+     scheduleRequest
   }
 }

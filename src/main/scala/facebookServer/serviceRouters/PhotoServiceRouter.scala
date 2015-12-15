@@ -15,7 +15,7 @@ import akka.actor.ActorRef
 import facebookServer.services.PhotoService
 
 class PhotoServiceRouter(numberOfActors:Int, 
-    photoURLMap: scala.collection.mutable.Map[String,scala.collection.mutable.ListBuffer[String]],
+    photoURLMap: scala.collection.mutable.Map[String,HashMap[String,Set[String]] with MultiMap[String,String]],
     loadMonitor : ActorRef) extends Actor {
    var router = {
    val routees = Vector.fill(numberOfActors){
@@ -26,7 +26,7 @@ class PhotoServiceRouter(numberOfActors:Int,
      Router(RoundRobinRoutingLogic(),routees) 
    }
    def receive = {
-     case addPhotos(fromId, toId, url) =>
-       router.route(addPhotos(fromId, toId, url),sender)
+     case addPhotos(fromId, toId, url,albumName) =>
+       router.route(addPhotos(fromId, toId, url,albumName),sender)
    }
    }

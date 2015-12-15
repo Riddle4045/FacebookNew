@@ -9,7 +9,7 @@
 		extra-scalaVersion="2.10"
 		conf="test"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool"
-		date="20151124225030"/>
+		date="20151213130844"/>
 	<dependencies>
 		<module organisation="io.spray" name="sbt-revolver">
 			<revision name="0.7.2" status="release" pubdate="20140317104258" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://github.com/spray/sbt-revolver" extra-sbtVersion="0.13" extra-scalaVersion="2.10" downloaded="false" searched="false" default="false" conf="default(compile), compile" position="8">

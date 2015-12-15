@@ -1,6 +1,7 @@
 package facebookClient.clientService
 
 import akka.actor.Actor
+
 import spray.http.HttpResponse
 import spray.can.Http
 import spray.http.HttpRequest
@@ -24,12 +25,16 @@ import common.PostToWall
 
 
 //This actor class will be sending only Get request 
-class POSTRequestClient(postRequestRate : Int, numOfUsers : Int) extends Actor {
+class POSTRequestClient(postRequestRate : Int, numOfUsers : Int, publicKeyHashMap : collection.concurrent.Map[String,String]) extends Actor {
   
   implicit val system: ActorSystem = ActorSystem()
   implicit val timeout: Timeout = Timeout(15.seconds)
   import system.dispatcher
+  generateKeyPair()
   
+  def generateKeyPair() = {
+      
+  }
   def updateProfile(userId: String, profileField : String, profileValue:  String) = {
     for {
        response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/updateProfile?userId=" + userId +"&profileField=" + profileField + "&profileValue=" + profileValue))).mapTo[HttpResponse]
@@ -54,9 +59,9 @@ class POSTRequestClient(postRequestRate : Int, numOfUsers : Int) extends Actor {
     }  
  }
  
-  def postPhoto(fromId : String, toId : String, url : String)={ 
+  def postPhoto(fromId : String, toId : String, url : String, albumName : String)={ 
       for {
-       response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/postPhoto?fromId=" + fromId +"&toId=" + toId + "&url=" + url))).mapTo[HttpResponse]
+       response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/postPhoto?fromId=" + fromId +"&toId=" + toId + "&url=" + url +"&albumName=" + albumName))).mapTo[HttpResponse]
     }  yield {
      //println(response.entity.data.asString)
     }  
@@ -110,7 +115,8 @@ class POSTRequestClient(postRequestRate : Int, numOfUsers : Int) extends Actor {
         case 0 => updateProfile(senderId,profileField,message);
         case 1 => postToWall(senderId,receiverId,message);
         case 2 => addFriend(senderId, receiverId)
-        case 3 => postPhoto(senderId, receiverId, message)
+        case 3 => var albumName = generateRandomMessage()
+          postPhoto(senderId, receiverId, message,albumName)
       }
     case _ => println("Unknown Request Intercepted by GETrequestActor")
   }
