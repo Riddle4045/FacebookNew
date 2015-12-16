@@ -19,7 +19,6 @@ import common.GetTimeLine
 import common.GetWall
 import common.StartClientRequests
 import common.SendRequestToServer
-import facebookClient.Client
 import java.security.KeyPairGenerator
 import java.util._
 import sun.misc.BASE64Encoder
@@ -29,7 +28,17 @@ import java.security.PrivateKey
 import java.security.PublicKey
 import spray.httpx.SprayJsonSupport
 import spray.json._
-import DefaultJsonProtocol._ 
+import DefaultJsonProtocol._
+import javax.crypto.SecretKey
+import javax.crypto.KeyGenerator
+import util.AES
+import scala.concurrent.Await
+import akka.pattern._
+import scala.concurrent.Future
+import org.apache.commons.codec._
+import org.apache.commons.codec.binary.Base64
+import util.AESnew
+
 
 
 class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collection.concurrent.Map[String,PublicKey]) extends Actor {
@@ -39,27 +48,59 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
   import system.dispatcher
   val userName = self.path.name
   var privateKey : PrivateKey = null;
+  var aesKey : SecretKey = null;
+  var serverPublicKey : PublicKey = null;
   
   def receive = {
     case StartClientRequests => distributeLoadAndSend
     case SendRequestToServer => sendRandomReuqest()
     case RegisterUser => registerUser
+    case "GetKey" => getServerPublicKey
+  }
+  
+  def generateUniversalAESkeys : SecretKey = {
+//    println("INSIDE  GENERATE UNIVERSALKEY")
+          // Generate key
+    var kgen : KeyGenerator = KeyGenerator.getInstance("AES");
+    kgen.init(128);
+    var aesKey : SecretKey = kgen.generateKey();
+    return aesKey
   }
 
   def registerUser = {
+    
         println("registering " + userName + "...")
-       var keyPairGen  = KeyPairGenerator.getInstance("RSA")
+        try {
+                   implicit val timeout: Timeout = Timeout(2.seconds)
+       var getkey =   self ? "GetKey"
+     import system.dispatcher
+      var sRes = Await.result(getkey,timeout.duration)
+          
+        }catch {
+          case e :Exception => println("There was an exception")
+        }
+
+   //   self ! "GetKey"
+    aesKey = generateUniversalAESkeys
+        println(aesKey)
+
+  }
+  def startSendingRequessts  = {
+    println("Starting to send request")
+           var keyPairGen  = KeyPairGenerator.getInstance("RSA")
+     //  keyPairGen.initialize(128)
       var PublicPrivateKeyPair =keyPairGen.generateKeyPair();
       var publicKey = PublicPrivateKeyPair.getPublic
       var b64 = new BASE64Encoder()
       //var publicString = b64.encode(publicKey)
       publicKeyHashMap.put(userName, publicKey);
       privateKey = PublicPrivateKeyPair.getPrivate;
-      
+
       //registration process..
-      
+
       self ! StartClientRequests
   }
+  
   
   def sendRandomReuqest() = {
       var act = generateRandomValue(6);
@@ -67,14 +108,15 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
       var receiverId = generateRandomUserName();
       var message = generateRandomMessage();
       var profileField = generateFieldValue();
+      println("sending  request")
       act match {
         case 0 => updateProfile(senderId,profileField,message);
-        case 1 =>  postToWall(senderId,receiverId,message);
+        case 1 => postToWall(senderId,receiverId,message);
         case 2 => addFriend(senderId, receiverId)
         case 3 => var albumName = generateRandomMessage()
           postPhoto(senderId, receiverId, message,albumName)
-        case 4 => getWall
-        case 5 => getProfile(userName)
+        case 4 =>// getWall
+        case 5 =>// getProfile(userName)
       }
   }
   
@@ -110,65 +152,116 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
        response <- (IO(Http) ? HttpRequest(GET, Uri("http://127.0.0.1:8080/wall"))).mapTo[HttpResponse]
     }  yield {
     //  println(response.entity.data.asString)
+
     }    
   }
+  
+    def getServerPublicKey = {
+     for {
+       response <- (IO(Http) ? HttpRequest(GET, Uri("http://127.0.0.1:8080/getServerPublicKey"))).mapTo[HttpResponse]
+    }  yield {
+     // println("GOT RESPONSE : " + response.entity.data.asString)
+          var  serverPublicKeyString : String = response.entity.data.asString
+          println("Decoding the String to Publickey")
+        // serverPublicKey = RSA.decodePublicKey(serverPublicKeyString).asInstanceOf[PublicKey]
+          serverPublicKey = RSA.myDecoder(serverPublicKeyString)
+            println("ServerKey: " + serverPublicKey)
+      startSendingRequessts
+    }    
+  }
+  
     def updateProfile(userId: String, profileField : String, profileValue:  String) = {
-     var  EncryptedProfileValue :  String = RSA.encryptB64(publicKeyHashMap(userId), profileValue);
-     var json_string = """{"userId" : " """  + userId + """ " , "profileField" : " """ + profileField + """ " , "profileValue" : " """ + EncryptedProfileValue + """" } """;
-       var formData = HttpEntity(ContentType(spray.http.MediaTypes.`application/json`), json_string); 
+    
+      var aesKeyString : String = Base64.encodeBase64String(aesKey.getEncoded)
+    
+    var RSAencryptedProfileField = RSA.encryptB64(publicKeyHashMap(userId), profileField.getBytes)
+    var RSAencryptedProfileValue = RSA.encryptB64(publicKeyHashMap(userId), profileValue.getBytes)
+    
+    //encrypt messages with the AES key.
+    var AESencryptedRSAedProfileField  = AES.encrypt(aesKeyString, "iv34567891234678", RSAencryptedProfileField)
+    var AESencryptedRSAedProfileValue = AES.encrypt(aesKeyString, "iv34567891234678", RSAencryptedProfileValue)
+    
+     //Encrypt AES key with RSA public Key for Server.
+    var EncrpytAESkeywithRSAKey = RSA.encrypt(serverPublicKey, aesKey.getEncoded)
+    
+    //encode the encrypted key as base64 to send it over network.
+    var b64_Encoder = new BASE64Encoder()
+    var data =   b64_Encoder.encode(EncrpytAESkeywithRSAKey)
+
+     var json_string = """{"userId" : " """  + userId + """ " , "profileField" : " """ + AESencryptedRSAedProfileField + """ " , "profileValue" : " """ + AESencryptedRSAedProfileValue + """", "EncryptedKey" : " """ + data + """ " } """;
+       var formData = HttpEntity(ContentType(spray.http.MediaTypes.`text/plain`), json_string); 
     for {
        response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/updateProfile"), entity=formData)).mapTo[HttpResponse]  
     }  yield {
-      //println(response.entity.data.asString)
+      println(response.entity.data.asString)
+    }  
+  }
+    
+    
+
+  def postToWall(senderId: String, receiverId : String, message:  String) = {
+    
+    //convert AES key to Base64 Encoded String
+    var aesKeyString : String = Base64.encodeBase64String(aesKey.getEncoded)
+    
+    var RSAencryptedMessage = RSA.encryptB64(publicKeyHashMap(receiverId), message.getBytes)
+    //encrypt message with the AES key.
+    var EncryptMessageWithAESKey  = AES.encrypt(aesKeyString, "iv34567891234678", RSAencryptedMessage)
+    
+     //Encrypt AES key with RSA public Key for Server.
+    var EncrpytAESkeywithRSAKey = RSA.encrypt(serverPublicKey, aesKey.getEncoded)
+    //encode the encrypted key as base64 to send it over network.
+    var b64_Encoder = new BASE64Encoder()
+    var data =   b64_Encoder.encode(EncrpytAESkeywithRSAKey)
+    var json = """{"senderId" : " """  + senderId + """ " , "receiverId" : " """ + receiverId + """ " , "post" : " """ + EncryptMessageWithAESKey + """", "EncryptedKey" :" """ + data + """ " } """;
+    var formData = HttpEntity(ContentType(spray.http.MediaTypes.`text/plain`), json); 
+    for { 
+     response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/sendPostwithData"), entity=formData)).mapTo[HttpResponse]  
+    }  yield {
+      println(response.entity.data.asString) 
     }  
   }
 
-  def postToWall(senderId: String, receiverId : String, message:  String) = {
-         var  EncryptedMessage :  String = RSA.encryptB64(publicKeyHashMap(receiverId), message);
-         var json = """{"senderId" : " """  + senderId + """ " , "receiverId" : " """ + receiverId + """ " , "post" : " """ + EncryptedMessage + """" } """;
-        // var json = """{ "post" : " """ + EncryptedMessage + """ "} """;
-    //     println(json)
-   var formData = HttpEntity(ContentType(spray.http.MediaTypes.`application/json`), json); 
-    for {
-      //response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/sendPost?senderId=" + senderId +"&receiverId=" + receiverId + "&post=" + EncryptedMessage), entity="""{ "key" : "whatever" }""")).mapTo[HttpResponse]          
-   //  response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/sendPostwithData"), entity = formData).mapTo[HttpResponse]  
-     response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/sendPostwithData"), entity=formData)).mapTo[HttpResponse]  
-    }  yield {
-   //   println(response.entity.data.asString) 
-    }  
-  }
-  
-  
-  /*def receive = {
-    case HttpRequest(GET, Uri.Path("/something"), _, _, _) =>
-      sender ! HttpResponse(entity = """{ "key": "value" }""", headers = List(`Content-Type`(`application/json`)))
-  }*/
   
  def addFriend(fromId : String, toId : String)={ 
       for {
        response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/addFriend?fromId=" + fromId +"&toId=" + toId))).mapTo[HttpResponse]
     }  yield {
-     //println(response.entity.data.asString)
+     println(response.entity.data.asString)
     }  
  }
  
   def postPhoto(fromId : String, toId : String, url : String, albumName : String)={
     
-    var  EncryptedUrl :  String = RSA.encryptB64(publicKeyHashMap(toId), url);
-    var  EncryptedAlbumName :  String = RSA.encryptB64(publicKeyHashMap(toId),albumName);
-    var json = """{"fromId" : " """  + fromId + """ " , "toId" : " """ + toId + """ " , "url" : " """ + EncryptedUrl + """" , "albumName" : "  """+EncryptedAlbumName+""" "} """;
+      var aesKeyString : String = Base64.encodeBase64String(aesKey.getEncoded)
+    
+    var RSAencryptedUrl = RSA.encryptB64(publicKeyHashMap(toId), url.getBytes)
+    var RSAencryptedAlbumName = RSA.encryptB64(publicKeyHashMap(toId), albumName.getBytes)
+    
+    //encrypt messages with the AES key.
+    var AESencryptedRSAedUrl  = AES.encrypt(aesKeyString, "iv34567891234678", RSAencryptedUrl)
+    var AESencryptedRSAedAlbumName = AES.encrypt(aesKeyString, "iv34567891234678", RSAencryptedAlbumName)
+    
+     //Encrypt AES key with RSA public Key for Server.
+    var EncrpytAESkeywithRSAKey = RSA.encrypt(serverPublicKey, aesKey.getEncoded)
+    
+    //encode the encrypted key as base64 to send it over network.
+    var b64_Encoder = new BASE64Encoder()
+    var data =   b64_Encoder.encode(EncrpytAESkeywithRSAKey)
+    
+    var json = """{"fromId" : " """  + fromId + """ " , "toId" : " """ + toId + """ " , "url" : " """ + AESencryptedRSAedUrl + """" , "albumName" : "  """+AESencryptedRSAedAlbumName+""" "} """;
     var formData = HttpEntity(ContentType(spray.http.MediaTypes.`application/json`), json);  
     for {
        response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/postPhoto") ,entity=formData)).mapTo[HttpResponse]   
        } 
       yield {
-     //println(response.entity.data.asString)
+     println(response.entity.data.asString)
     }  
  }
   
     def generateRandomMessage(): String = {
     val random = new scala.util.Random
-    val length: Int = random.nextInt(20) + 20 //min 20 chars, max 40 chars
+    val length: Int = random.nextInt(1) + 2 //min 5 chars, max 10 chars
     val sb = new StringBuilder
     for (i <- 1 to length) {
       //ASCII value 65 to 90 are printable characters
@@ -177,7 +270,7 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
     sb.toString
   }
     
-  var profileFieldArray = Array("age" , "gender" , "school" , "university" , "interests", "movies" , "books");
+  var profileFieldArray = Array("age" , "gen" , "sch" , "uni" , "int", "mov" , "bok");
   def generateFieldValue() :  String = {
    var random = new scala.util.Random
    var randomField = random.nextInt(profileFieldArray.length)

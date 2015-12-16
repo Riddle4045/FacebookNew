@@ -1,4 +1,4 @@
-[0m[[0minfo[0m] [0mRunning facebookClient.Client 2[0m
+[0m[[0minfo[0m] [0mRunning facebookClient.Client 1[0m
 [0m[[0mdebug[0m] [0mWaiting for threads to exit or System.exit to be called.[0m
 [0m[[0mdebug[0m] [0m  Classpath:[0m
 [0m[[0mdebug[0m] [0m	/Users/Ishan/Documents/workspace/Facebook3/target/scala-2.11/classes[0m
@@ -30,6 +30,7 @@
 [0m[[0mdebug[0m] [0m	/Users/Ishan/.ivy2/cache/com.typesafe.akka/akka-actor_2.11/jars/akka-actor_2.11-2.3.7.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/Ishan/.ivy2/cache/io.netty/netty/bundles/netty-3.8.0.Final.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/Ishan/.ivy2/cache/org.uncommons.maths/uncommons-maths/jars/uncommons-maths-1.2.2a.jar[0m
+[0m[[0mdebug[0m] [0m	/Users/Ishan/.ivy2/cache/commons-codec/commons-codec/jars/commons-codec-1.9.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/Ishan/.ivy2/cache/io.spray/spray-routing_2.11/bundles/spray-routing_2.11-1.3.1.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/Ishan/.ivy2/cache/io.spray/spray-http_2.11/bundles/spray-http_2.11-1.3.1.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/Ishan/.ivy2/cache/io.spray/spray-util_2.11/bundles/spray-util_2.11-1.3.1.jar[0m
@@ -56,4 +57,4 @@
 [0m[[0mdebug[0m] [0m	/Users/Ishan/.ivy2/cache/ch.qos.logback/logback-core/jars/logback-core-1.1.2.jar[0m
 [0m[[0mdebug[0m] [0mWaiting for thread run-main-0 to terminate.[0m
 [0m[[0mdebug[0m] [0m	Thread run-main-0 exited.[0m
-[0m[[0mdebug[0m] [0mWaiting for thread New I/O worker #2 to terminate.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread New I/O worker #5 to terminate.[0m

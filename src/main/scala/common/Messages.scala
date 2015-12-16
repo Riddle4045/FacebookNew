@@ -1,5 +1,7 @@
 package common
 
+import java.security.PublicKey
+
 
   trait Messages 
 
@@ -19,3 +21,9 @@ package common
   case class addFriends(fromId : String, toId: String) extends Messages
   case class addPhotos(fromId :  String, toId:String, url:String,albumName:String) extends Messages
   case object RegisterUser extends Messages
+  case object RequestServerPublicKey extends Messages
+  case class AuthenticateUser(userId : String, publicKey : PublicKey) extends Messages 
+  case class ConfirmAuthentication(userId :  String , randomNumber :  String) extends Messages
+  case object GetServerPublicKey extends Messages
+  case object GetServerPrivateKey extends Messages
+  case class takePublicKey(serverPublicKey : PublicKey) extends Messages

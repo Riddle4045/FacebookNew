@@ -23,10 +23,30 @@ import org.json4s.JsonAST.JObject
 import org.json4s.JsonFormat
 import spray.json._
 import spray.json.JsonParser
-import scala.util.parsing.json.JSON
 import org.json4s.JsonUtil
-import scala.util.parsing.json.JSONType
 import org.json4s.JsonWriter
+import common.AuthenticateUser
+import java.security.PublicKey
+import common.GetServerPublicKey
+import common.GetServerPrivateKey
+import scala.concurrent.Await
+import akka.util.Timeout
+import util.RSA
+import util.AES
+import util.AESnew
+import scala.concurrent._
+import scala.concurrent.duration._
+import akka.pattern._
+import java.security.PrivateKey
+import common.takePublicKey
+import common.ServerKeys
+import org.apache.commons.codec.binary.Base64
+import sun.misc.BASE64Decoder
+import javax.crypto.Cipher
+
+
+
+
 
 object Master extends App with SimpleRoutingApp {
   
@@ -39,24 +59,61 @@ object Master extends App with SimpleRoutingApp {
             path("updateProfile") {
               entity(as[String])  { profile =>
                 var data  = profile.stripMargin.replaceAll("[\n\r]","")
-               var jsonData = data.parseJson.asJsObject
-              var path = akkaServerPath + "profileServiceRouter"
+                var jsonData = data.parseJson.asJsObject
+                var path = akkaServerPath + "profileServiceRouter"
+                
+                var en_str = data.substring(data.indexOf("EncryptedKey") + "EncryptedKey".length()+6)
+                en_str = en_str.substring(0, en_str.length()-5)
+
+                var profile_value_string = data.substring(data.indexOf("profileValue") + "profileValue".length() + 5,data.indexOf("EncryptedKey"))
+                profile_value_string = profile_value_string.substring(0, profile_value_string.length-4)
+                
+                var profile_field_string = data.substring(data.indexOf("profileField") + "profileField".length() + 5,data.indexOf("profileValue"))
+                profile_field_string = profile_field_string.substring(0, profile_field_string.length-5)
+
+                var b64_decoder = new BASE64Decoder()
+                var decodedKeyinBytes =  b64_decoder.decodeBuffer(en_str)
+                val cipher = Cipher.getInstance("RSA")
+                cipher.init(Cipher.DECRYPT_MODE, ServerKeys.serverPrivateKey);
+                var decoded_data = cipher.doFinal(decodedKeyinBytes)
+                var encoder : sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder();
+                var decrpytedKeyTodecryptPost  : String =  encoder.encode(decoded_data);
+                var decryptedProfileField = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", profile_field_string)
+                 var decryptedProfileValue = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", profile_value_string)
                 complete {
-                          var postServiceRouter  = system.actorSelection(path) ! updateProfile(jsonData.getFields("userId").toString(),jsonData.getFields("profileField").toString(),jsonData.getFields("profileValue").toString())
+                          var postServiceRouter  = system.actorSelection(path) ! updateProfile(jsonData.getFields("userId").toString(),decryptedProfileField,decryptedProfileValue)
                               "wall updated"
                 }
               }      
             }
         } ~  
-          post {
+       post {
             path("sendPostwithData") {
               entity(as[String])  { post =>
-                var data  = post.stripMargin.replaceAll("[\n\r]","")
-               var jsonData = data.parseJson.asJsObject
-            
-                var path = akkaServerPath + "postServiceRouter"
-                complete {
-                     var postServiceRouter  = system.actorSelection(path) ! addPost(jsonData.getFields("receiverId").toString(),jsonData.getFields("senderId").toString(),jsonData.getFields("post").toString())
+                    var path = akkaServerPath + "postServiceRouter"
+                    var privaKey = ServerKeys.serverPrivateKey
+                    var data  = post.stripMargin.replaceAll("[\n\r\t' ']","")
+                    
+                    var jsonData = data.parseJson.asJsObject
+
+                    var post_str = data.substring(data.indexOf("post") + "post".length() + 3,data.indexOf("EncryptedKey"))
+                    post_str = post_str.substring(0, post_str.length-3)
+
+                    var en_str = data.substring(data.indexOf("EncryptedKey") + "EncryptedKey".length()+3)
+
+                    en_str = en_str.substring(0, en_str.length()-2)
+     
+                    var b64_decoder = new BASE64Decoder()
+                    var decodedKeyinBytes =  b64_decoder.decodeBuffer(en_str)
+                    val cipher = Cipher.getInstance("RSA")
+                    cipher.init(Cipher.DECRYPT_MODE, ServerKeys.serverPrivateKey);
+                    var decoded_data = cipher.doFinal(decodedKeyinBytes)
+                    var encoder : sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder();
+                    var decrpytedKeyTodecryptPost  : String =  encoder.encode(decoded_data);
+                    var decryptedData = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", post_str)
+                     println(decryptedData)
+              complete {
+                     var postServiceRouter  = system.actorSelection(path) ! addPost(jsonData.getFields("receiverId").toString(),jsonData.getFields("senderId").toString(),decryptedData)
                      "profile updated"
                 }
               }
@@ -72,22 +129,69 @@ object Master extends App with SimpleRoutingApp {
                 }
               }
             }
-            /**/
         } ~
          post {
             path("postPhoto") {
             entity(as[String])  { photo =>
                 var data  = photo.stripMargin.replaceAll("[\n\r]","")
-               var jsonData = data.parseJson.asJsObject
+                var jsonData = data.parseJson.asJsObject
                 var path = akkaServerPath + "photoServiceRouter"
+                var en_str = data.substring(data.indexOf("EncryptedKey") + "EncryptedKey".length()+6)
+                en_str = en_str.substring(0, en_str.length()-5)
+
+                var profile_value_string = data.substring(data.indexOf("profileValue") + "profileValue".length() + 5,data.indexOf("EncryptedKey"))
+                profile_value_string = profile_value_string.substring(0, profile_value_string.length-4)
+                
+                var profile_field_string = data.substring(data.indexOf("profileField") + "profileField".length() + 5,data.indexOf("profileValue"))
+                profile_field_string = profile_field_string.substring(0, profile_field_string.length-5)
+
+                var b64_decoder = new BASE64Decoder()
+                var decodedKeyinBytes =  b64_decoder.decodeBuffer(en_str)
+                val cipher = Cipher.getInstance("RSA")
+                cipher.init(Cipher.DECRYPT_MODE, ServerKeys.serverPrivateKey);
+                var decoded_data = cipher.doFinal(decodedKeyinBytes)
+                var encoder : sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder();
+                var decrpytedKeyTodecryptPost  : String =  encoder.encode(decoded_data);
+                var decryptedProfileField = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", profile_field_string)
+                var decryptedProfileValue = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", profile_value_string)
+                
+                
+                
+                
                 complete {
                           var postServiceRouter  = system.actorSelection(path) ! addPhotos(jsonData.getFields("fromId").toString(),jsonData.getFields("toId").toString(),jsonData.getFields("url").toString(),jsonData.getFields("albumName").toString())
                               "photo updated"
                 }
               }
             }
-        } ~
-        get {
+        }~  get {
+          path("getServerPublicKey"){
+                   var path = akkaServerPath + "registrationAndAuthenticationService"
+            complete {
+                 //      implicit val timeout: Timeout = Timeout(1.seconds)
+                 //     import system.dispatcher
+                //  var registrationAndAuthenticationServiceRef = Await.result(system.actorSelection(path).resolveOne(),timeout.duration) 
+              //  var fuckingFuture =  registrationAndAuthenticationServiceRef ? GetServerPublicKey
+             //   val result = Await.result(fuckingFuture, timeout.duration)
+          //      result.toString()
+           var serverPublicKey =   ServerKeys.serverPublicKey
+           var serverPublicKeyString = Base64.encodeBase64String(serverPublicKey.getEncoded)
+           serverPublicKeyString
+            }
+        }
+     }  ~  get {
+          path("authenticate"){
+            entity(as[String])  { auth =>
+                var data  = auth.stripMargin.replaceAll("[\n\r]","")
+                var jsonData = data.parseJson.asJsObject
+                var path = akkaServerPath + "registrationAndAuthenticationService"
+            complete {
+              var registrationAndAuthenticationServe = system.actorSelection(path)  ! AuthenticateUser(jsonData.getFields("userId").toString(),jsonData.getFields("publickey").asInstanceOf[PublicKey]);
+              "authenticaing..."
+            }
+          }
+        }
+     } ~ get {
             path("profile") {
                    var path = akkaServerPath + "loadMonitorserivce"
                 complete {
@@ -104,10 +208,8 @@ object Master extends App with SimpleRoutingApp {
                   "Send wall in JSON form"
               }
             }
-        }
-    }
-    
+        }     
   }
 
-   
+  }
 }
