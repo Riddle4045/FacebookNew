@@ -26,7 +26,7 @@ class PhotoService(numberOfActors: Int,
               photoURLMap.get(toId).get.addBinding(url, albumName)
     }
     
-            println(photoURLMap.toString())
+    //        println(photoURLMap.toString())
     loadMonitor ! FinishedWork("postPhoto")
       }catch {
                 case e : Exception => println("There's an exception in PhotoServices")

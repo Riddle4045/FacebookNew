@@ -43,9 +43,10 @@ import common.ServerKeys
 import org.apache.commons.codec.binary.Base64
 import sun.misc.BASE64Decoder
 import javax.crypto.Cipher
-
-
-
+import java.security.KeyFactory
+import java.security.spec.X509EncodedKeySpec
+import scala.util.Success
+import scala.util.Failure
 
 
 object Master extends App with SimpleRoutingApp {
@@ -111,7 +112,7 @@ object Master extends App with SimpleRoutingApp {
                     var encoder : sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder();
                     var decrpytedKeyTodecryptPost  : String =  encoder.encode(decoded_data);
                     var decryptedData = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", post_str)
-                     println(decryptedData)
+                   
               complete {
                      var postServiceRouter  = system.actorSelection(path) ! addPost(jsonData.getFields("receiverId").toString(),jsonData.getFields("senderId").toString(),decryptedData)
                      "profile updated"
@@ -136,15 +137,15 @@ object Master extends App with SimpleRoutingApp {
                 var data  = photo.stripMargin.replaceAll("[\n\r]","")
                 var jsonData = data.parseJson.asJsObject
                 var path = akkaServerPath + "photoServiceRouter"
-                var en_str = data.substring(data.indexOf("EncryptedKey") + "EncryptedKey".length()+6)
-                en_str = en_str.substring(0, en_str.length()-5)
+                var en_str = data.substring(data.indexOf("EncryptedKey") + "EncryptedKey".length()+5)
+                en_str = en_str.substring(0, en_str.length()-4)
 
-                var profile_value_string = data.substring(data.indexOf("profileValue") + "profileValue".length() + 5,data.indexOf("EncryptedKey"))
-                profile_value_string = profile_value_string.substring(0, profile_value_string.length-4)
+                var photo_url_string = data.substring(data.indexOf("url") + "url".length() + 5,data.indexOf("albumName"))
+                photo_url_string = photo_url_string.substring(0, photo_url_string.length-5)
                 
-                var profile_field_string = data.substring(data.indexOf("profileField") + "profileField".length() + 5,data.indexOf("profileValue"))
-                profile_field_string = profile_field_string.substring(0, profile_field_string.length-5)
-
+                var album_name_string = data.substring(data.indexOf("albumName") + "albumName".length() + 5,data.indexOf("EncryptedKey"))
+                album_name_string = album_name_string.substring(0, album_name_string.length-5)
+             
                 var b64_decoder = new BASE64Decoder()
                 var decodedKeyinBytes =  b64_decoder.decodeBuffer(en_str)
                 val cipher = Cipher.getInstance("RSA")
@@ -152,12 +153,9 @@ object Master extends App with SimpleRoutingApp {
                 var decoded_data = cipher.doFinal(decodedKeyinBytes)
                 var encoder : sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder();
                 var decrpytedKeyTodecryptPost  : String =  encoder.encode(decoded_data);
-                var decryptedProfileField = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", profile_field_string)
-                var decryptedProfileValue = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", profile_value_string)
-                
-                
-                
-                
+                var decryptedPhotoUrl = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", photo_url_string)
+                var decryptedAlbumName = AES.decrypt(decrpytedKeyTodecryptPost, "iv34567891234678", album_name_string)
+             
                 complete {
                           var postServiceRouter  = system.actorSelection(path) ! addPhotos(jsonData.getFields("fromId").toString(),jsonData.getFields("toId").toString(),jsonData.getFields("url").toString(),jsonData.getFields("albumName").toString())
                               "photo updated"
@@ -181,12 +179,19 @@ object Master extends App with SimpleRoutingApp {
         }
      }  ~  get {
           path("authenticate"){
-            entity(as[String])  { auth =>
-                var data  = auth.stripMargin.replaceAll("[\n\r]","")
-                var jsonData = data.parseJson.asJsObject
+                parameters("userId", "publickey") { (userId,publickey) =>
+                var b64_decoder = new BASE64Decoder()
+                var decodedKeyinBytes =  b64_decoder.decodeBuffer(publickey)
+                var   pubK : PublicKey =   KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(decodedKeyinBytes));
                 var path = akkaServerPath + "registrationAndAuthenticationService"
             complete {
-              var registrationAndAuthenticationServe = system.actorSelection(path)  ! AuthenticateUser(jsonData.getFields("userId").toString(),jsonData.getFields("publickey").asInstanceOf[PublicKey]);
+                 implicit val timeout: Timeout = Timeout(1.seconds)
+                import system.dispatcher
+              var f  = system.actorSelection(path)  ? AuthenticateUser(userId,pubK);
+              f.onComplete { 
+                  case Success(value) => println("Printing the value returned for authentication: " + value)
+                  case Failure(e) => e.printStackTrace
+              }
               "authenticaing..."
             }
           }

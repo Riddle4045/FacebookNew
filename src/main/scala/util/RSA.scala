@@ -33,7 +33,7 @@ object RSA {
   }
   
   def myDecoder(key : String) : PublicKey= {
-    println("Inside my decoder")
+   // println("Inside my decoder")
                var byteKey : Array[Byte] = Base64.decodeBase64(key.getBytes)
         var X509publicKey  : X509EncodedKeySpec = new X509EncodedKeySpec(byteKey);
         var kf : KeyFactory = KeyFactory.getInstance("RSA");

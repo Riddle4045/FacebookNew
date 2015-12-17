@@ -50,6 +50,7 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
   var privateKey : PrivateKey = null;
   var aesKey : SecretKey = null;
   var serverPublicKey : PublicKey = null;
+  var publicKey : PublicKey = null;
   
   def receive = {
     case StartClientRequests => distributeLoadAndSend
@@ -68,26 +69,11 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
   }
 
   def registerUser = {
+
+    println("registering " + userName + "...")
     
-        println("registering " + userName + "...")
-        try {
-                   implicit val timeout: Timeout = Timeout(2.seconds)
-       var getkey =   self ? "GetKey"
-     import system.dispatcher
-      var sRes = Await.result(getkey,timeout.duration)
-          
-        }catch {
-          case e :Exception => println("There was an exception")
-        }
-
-   //   self ! "GetKey"
-    aesKey = generateUniversalAESkeys
-        println(aesKey)
-
-  }
-  def startSendingRequessts  = {
-    println("Starting to send request")
-           var keyPairGen  = KeyPairGenerator.getInstance("RSA")
+    //generate self's public and private key.
+      var keyPairGen  = KeyPairGenerator.getInstance("RSA")
      //  keyPairGen.initialize(128)
       var PublicPrivateKeyPair =keyPairGen.generateKeyPair();
       var publicKey = PublicPrivateKeyPair.getPublic
@@ -95,9 +81,40 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
       //var publicString = b64.encode(publicKey)
       publicKeyHashMap.put(userName, publicKey);
       privateKey = PublicPrivateKeyPair.getPrivate;
+      publicKey = PublicPrivateKeyPair.getPublic
 
       //registration process..
+    
+    //get the server's public key, which is being used to communicate since RSA kind of sucks.
+    try {
+      implicit val timeout: Timeout = Timeout(2.seconds)
+      var getkey = self ? "GetKey"
+      import system.dispatcher
+      var sRes = Await.result(getkey, timeout.duration)
 
+    } catch {
+      case e: Exception => println("Still waiting for the Server's public key!")
+    }
+    //authenticate yourself to the Server.
+    //here beings the journey of message exchanges which would seem retarded to a mere human 
+    authenticateUser
+    
+    aesKey = generateUniversalAESkeys
+
+
+  }
+  
+  def authenticateUser = {
+    var selfPublicKeyString = Base64.encodeBase64String(publicKey.getEncoded)
+    for {
+       response <- (IO(Http) ? HttpRequest(GET, Uri("http://127.0.0.1:8080/authenticate?userId=" + userName + "&publickey=" + selfPublicKeyString ))).mapTo[HttpResponse]
+    }  yield {
+       println(response.entity.data.asString)
+    }       
+        startSendingRequessts
+  }
+  def startSendingRequessts  = {
+    println("Starting to send request")
       self ! StartClientRequests
   }
   
@@ -108,21 +125,21 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
       var receiverId = generateRandomUserName();
       var message = generateRandomMessage();
       var profileField = generateFieldValue();
-      println("sending  request")
+   //   println("sending  request")
       act match {
         case 0 => updateProfile(senderId,profileField,message);
         case 1 => postToWall(senderId,receiverId,message);
         case 2 => addFriend(senderId, receiverId)
         case 3 => var albumName = generateRandomMessage()
           postPhoto(senderId, receiverId, message,albumName)
-        case 4 =>// getWall
-        case 5 =>// getProfile(userName)
+        case 4 => getWall
+        case 5 => getProfile(userName)
       }
   }
   
   def distributeLoadAndSend = {
     val postRequestInterval = (RequestRate / 100000).milli
-     println(postRequestInterval)
+  //   println(postRequestInterval)
     system.scheduler.schedule(0 milli, 100.milli, self.actorRef, SendRequestToServer)
   }
     
@@ -143,7 +160,7 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
     for {
        response <- (IO(Http) ? HttpRequest(GET, Uri("http://127.0.0.1:8080/profile"))).mapTo[HttpResponse]
     }  yield {
-     // println(response.entity.data.asString)
+     println(response.entity.data.asString)
     }  
   }
   
@@ -151,22 +168,22 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
      for {
        response <- (IO(Http) ? HttpRequest(GET, Uri("http://127.0.0.1:8080/wall"))).mapTo[HttpResponse]
     }  yield {
-    //  println(response.entity.data.asString)
+      println(response.entity.data.asString)
 
     }    
   }
   
-    def getServerPublicKey = {
+  def getServerPublicKey = {
      for {
        response <- (IO(Http) ? HttpRequest(GET, Uri("http://127.0.0.1:8080/getServerPublicKey"))).mapTo[HttpResponse]
     }  yield {
      // println("GOT RESPONSE : " + response.entity.data.asString)
           var  serverPublicKeyString : String = response.entity.data.asString
-          println("Decoding the String to Publickey")
+       //   println("Decoding the String to Publickey")
         // serverPublicKey = RSA.decodePublicKey(serverPublicKeyString).asInstanceOf[PublicKey]
           serverPublicKey = RSA.myDecoder(serverPublicKeyString)
-            println("ServerKey: " + serverPublicKey)
-      startSendingRequessts
+        //    println("ServerKey: " + serverPublicKey)
+    //  startSendingRequessts
     }    
   }
   
@@ -233,7 +250,7 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
  
   def postPhoto(fromId : String, toId : String, url : String, albumName : String)={
     
-      var aesKeyString : String = Base64.encodeBase64String(aesKey.getEncoded)
+    var aesKeyString : String = Base64.encodeBase64String(aesKey.getEncoded)
     
     var RSAencryptedUrl = RSA.encryptB64(publicKeyHashMap(toId), url.getBytes)
     var RSAencryptedAlbumName = RSA.encryptB64(publicKeyHashMap(toId), albumName.getBytes)
@@ -249,7 +266,7 @@ class FacebookUsers(numOfUsers : Int,RequestRate : Int,publicKeyHashMap : collec
     var b64_Encoder = new BASE64Encoder()
     var data =   b64_Encoder.encode(EncrpytAESkeywithRSAKey)
     
-    var json = """{"fromId" : " """  + fromId + """ " , "toId" : " """ + toId + """ " , "url" : " """ + AESencryptedRSAedUrl + """" , "albumName" : "  """+AESencryptedRSAedAlbumName+""" "} """;
+    var json = """{"fromId" : " """  + fromId + """ " , "toId" : " """ + toId + """ " , "url" : " """ + AESencryptedRSAedUrl + """" , "albumName" : "  """+AESencryptedRSAedAlbumName+"""" , "EncryptedKey" : """" + data + """ "} """;
     var formData = HttpEntity(ContentType(spray.http.MediaTypes.`application/json`), json);  
     for {
        response <- (IO(Http) ? HttpRequest(POST, Uri("http://127.0.0.1:8080/postPhoto") ,entity=formData)).mapTo[HttpResponse]   

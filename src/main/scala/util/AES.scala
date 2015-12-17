@@ -15,7 +15,7 @@ object AES {
             var iv : IvParameterSpec = new IvParameterSpec(initVector.getBytes("UTF-8"));
           //  var skeySpec : SecretKeySpec= new SecretKeySpec(key.getBytes("UTF-8"), "AES");
             var skeySpec : SecretKeySpec = keyToSpec(key)
-              println("Size of keyspec : " + skeySpec.getEncoded.length)
+          //    println("Size of keyspec : " + skeySpec.getEncoded.length)
             var cipher  : Cipher= Cipher.getInstance("AES/CBC/PKCS5PADDING");
             
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
